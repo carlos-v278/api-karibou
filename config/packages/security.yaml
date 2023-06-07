@@ -40,10 +40,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/api/users, roles: ROLE_USER, method: [GET, PUT, DELETE,POST] }
-        - { path: ^/api, roles: ROLE_USER, method: [GET] }
-        - { path: ^/api/books, roles: [SCOPE_BOOK_CREATE,ROLE_BOOK_EDIT ], method: [GET, PUT, DELETE,POST] }
-
+    - { path: ^/api/users, roles: ROLE_GOD, method: [GET, PUT, DELETE,POST] }
     # - { path: ^/profile, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:

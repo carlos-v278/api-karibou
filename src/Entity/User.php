@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Contstrains as Assert;
 #[ApiResource(
     normalizationContext: ['groups'=>['user:read']],
     denormalizationContext: ['groups'=>['user:write']],
-    security: 'is_granted("ROLE_USER_EDIT")'
+    security: 'is_granted("ROLE_TENANT")'
 )]
 #[UniqueEntity(fields: ['email'],message: 'There is already an account with this email')]
 #[UniqueEntity(fields: ['username'],message: 'There is already an account with this username')]
@@ -30,7 +30,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups(['user:read','user:write'])]
     #[Assert\NotBlank]
     #[Assert\Email]
     private ?string $email = null;
@@ -42,11 +41,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Groups(['user:write'])]
+
     private ?string $password = null;
 
     #[ORM\Column(length: 255,unique:true)]
-    #[Groups(['user:read','user:write'])]
+
     #[Assert\NotBlank]
     private ?string $username = null;
 

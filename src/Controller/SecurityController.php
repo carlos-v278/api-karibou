@@ -47,8 +47,7 @@ class SecurityController extends AbstractController
                 $apiToken->setOwnedBy($user);
                 $token = [$apiToken->getToken()];
                 $apiToken->setScopes([
-                    $apiToken::SCOPE_BOOK_CREATE,
-                    $apiToken::SCOPE_BOOK_EDIT,
+                    $apiToken::ROLE_TENANT,
                 ]);
                 $em->persist($apiToken);
                 $em->flush();
