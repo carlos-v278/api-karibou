@@ -11,10 +11,11 @@ security:
                 property: email
 
     role_hierarchy:
-        ROLE_FULL_GOD: [ ROLE_OWNER_CREATE,ROLE_OWNER_EDIT, ROLE_SYNDIC_CREATE,ROLE_SYNDIC_EDIT,ROLE_TENANT]
-        ROLE_FULL_SYNDIC: [ ROLE_OWNER_CREATE,ROLE_OWNER_EDIT,ROLE_TENANT]
-        ROLE_FULL_OWNER: [ ROLE_OWNER_CREATE,ROLE_OWNER_EDIT,ROLE_TENANT]
-        ROLE_FULL_TENANT: [ ROLE_OWNER_CREATE,ROLE_OWNER_EDIT,ROLE_TENANT]
+        ROLE_FULL_GOD: [ ROLE_OWNER_CREATE,ROLE_OWNER_EDIT, ROLE_SYNDIC_CREATE,ROLE_SYNDIC_EDIT,ROLE_TENANT,ROLE_USER]
+        ROLE_FULL_SYNDIC: [ ROLE_OWNER_CREATE,ROLE_OWNER_EDIT,ROLE_TENANT,ROLE_USER]
+        ROLE_FULL_OWNER: [ ROLE_OWNER_CREATE,ROLE_OWNER_EDIT,ROLE_TENANT,ROLE_USER]
+        ROLE_FULL_TENANT: [ ROLE_OWNER_CREATE,ROLE_OWNER_EDIT,ROLE_TENANT,ROLE_USER]
+        ROLE_USER: ROLE_USER
 
 
 
@@ -44,7 +45,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-    - { path: ^/api/users, roles: ROLE_GOD, method: [GET, PUT, DELETE,POST] }
+    #- { path: ^/api/users, roles: ROLE_USER, method: [GET, PUT, DELETE,POST] }
     # - { path: ^/profile, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:

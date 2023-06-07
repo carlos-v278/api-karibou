@@ -51,12 +51,16 @@ use Symfony\Component\Validator\Contstrains as Assert;
             security: 'is_granted("ROLE_TENANT_EDIT")',
             name: 'edit_user_tenant',
         ),
+
         new GetCollection(
-            uriTemplate: "users/{building-id}",
+            uriTemplate: "users/",
+            normalizationContext: ['groups'=> ['user:read']],
+            denormalizationContext: ['groups'=> ['read:user:collection']],
             security: 'is_granted("ROLE_USER")',
         )
     ]
 )]
+/* Supprimer  la get All users  car get par imeuble*/
 #[UniqueEntity(fields: ['email'],message: 'There is already an account with this email')]
 #[UniqueEntity(fields: ['username'],message: 'There is already an account with this username')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -82,6 +86,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, unique: true, nullable: true)]
     #[Assert\NotBlank]
+    #[Groups(['user:read'])]
     private ?string $username = null;
 
 
@@ -91,9 +96,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?array $accesTokenScopes = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:read'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:read'])]
     private ?string $lastname = null;
     public function __construct()
     {
