@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:${POSTGRES_VERSION:-13}-alpine
+    ports:
+      - 5437:5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-karibou}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-H^FtLYj8!r09}
+      POSTGRES_USER: ${POSTGRES_USER:-karibou}
+    volumes:
+      - db-data:/var/lib/postgresql/data:rw
+    networks:
+      - local_environment_web
+
+  back:
+    entrypoint: ["bash", "./docker-entrypoint.sh"]
+    build:
+      context: ${ROOT_PATH:-../}
+      dockerfile: ./${DOCKER_DIR:-DockerKaribou}/back/Dockerfile
+    restart: unless-stopped
+    container_name: app_container
+    ports:
+      - 8080:8000
+    networks:
+      - local_environment_web
+    depends_on:
+      - database
+    volumes:
+      - "${ROOT_PATH:-../}${ENGINE_PATH:-./karibou-api}:/var/www"
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-karibou}:${POSTGRES_PASSWORD:-H^FtLYj8!r09}@database:5432/${POSTGRES_DB:-karibou}
+    working_dir: /var/www
+
+  worker-php:
+    build:
+      context: ${ROOT_PATH:-../}
+      dockerfile: ./${DOCKER_DIR:-DockerKaribou}/back/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - "${ROOT_PATH:-../}${ENGINE_PATH:-./karibou-api}:/var/www"
+    deploy:
+      replicas: 1
+    depends_on:
+      - back
+    networks:
+      - local_environment_web
+volumes:
+  db-data:
+
+networks:
+  local_environment_web:
+    name: local_environment_web
