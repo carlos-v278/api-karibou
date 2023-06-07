@@ -9,20 +9,27 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class ApiToken
 {
     private const PERSONAL_ACCESS_TOKEN_PREFIX='kcp_';
-    public const ROLE_GOD = 'ROLE_GOD';
+
     public const ROLE_SYNDIC_CREATE = 'ROLE_SYNDIC_CREATE';
     public const ROLE_SYNDIC_EDIT = 'ROLE_SYNDIC_EDIT';
     public const ROLE_OWNER_EDIT = 'ROLE_OWNER_EDIT';
     public const ROLE_OWNER_CREATE = 'ROLE_OWNER_CREATE';
-    public const ROLE_TENANT = 'ROLE_TENANT';
+    public const ROLE_TENANT_CREATE = 'ROLE_TENANT_CREATE';
+    public const ROLE_TENANT_EDIT = 'ROLE_TENANT_EDIT';
+    public const ROLE_USER = 'ROLE_USER';
 
 
 
 
     public const SCOPES = [
-        self::ROLE_TENANT,
-        self::ROLE_GOD,
+        self::ROLE_TENANT_EDIT,
+        self::ROLE_TENANT_CREATE,
         self::ROLE_SYNDIC_CREATE,
+        self::ROLE_SYNDIC_EDIT,
+        self::ROLE_OWNER_CREATE,
+        self::ROLE_OWNER_EDIT,
+        self::ROLE_USER,
+
     ];
 
     #[ORM\Id]

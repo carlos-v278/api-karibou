@@ -16,7 +16,7 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class SecurityController extends AbstractController
 {
-    #[Route('/login', name: 'app_login',methods: ['POST'])]
+    #[Route('/connexion', name: 'app_login',methods: ['POST'])]
     public function login(
         Request $request,
         IriConverterInterface $iriConverter,
@@ -47,7 +47,7 @@ class SecurityController extends AbstractController
                 $apiToken->setOwnedBy($user);
                 $token = [$apiToken->getToken()];
                 $apiToken->setScopes([
-                    $apiToken::ROLE_TENANT,
+                    $apiToken::ROLE_USER,
                 ]);
                 $em->persist($apiToken);
                 $em->flush();
@@ -68,12 +68,12 @@ class SecurityController extends AbstractController
         ], 401);
     }
 
-    #[Route('/logout', name: 'app_logout',methods: ['POST'])]
+    #[Route('/deconnexion', name: 'app_logout',methods: ['POST'])]
     public function logout(): void
     {
         throw new \Exception('This should never be reached');
     }
-    #[Route('/registration', name: 'app_registration',methods: ['POST'])]
+    #[Route('/inscription', name: 'app_registration',methods: ['POST'])]
     public function index(ManagerRegistry $doctrine, Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         $em = $doctrine->getManager();
@@ -90,6 +90,20 @@ class SecurityController extends AbstractController
         $user->setPassword($hashedPassword);
         $user->setEmail($email);
         $user->setUsername($userName);
+        $em->persist($user);
+        $em->flush();
+
+        return $this->json(['message' => 'Registered successfully!']);
+    }
+
+    #[Route('/invitation-syndic', name: 'app_invitation_syndic',methods: ['POST'])]
+    public function syndic(ManagerRegistry $doctrine, Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
+    {
+        $em = $doctrine->getManager();
+        $decoded = json_decode($request->getContent());
+        $email = $decoded->email;
+        $user = new User();
+        $user->setEmail($email);
         $em->persist($user);
         $em->flush();
 

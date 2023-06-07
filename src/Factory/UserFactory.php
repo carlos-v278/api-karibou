@@ -39,6 +39,24 @@ final class UserFactory extends ModelFactory
         'ClumsyClaws',
         'HoarderOfUselessTrinkets',
     ];
+    const FIRSTNAMES = [
+        'Carlos',
+        'Dorian',
+        'Fernand',
+        'Fallone',
+        'Romain',
+        'Louis',
+        'Ben',
+    ];
+    const LASTNAMES = [
+        'Vieira',
+        'Nkulu',
+        'Montalbetti',
+        'Versluysen',
+        'Bernier',
+        'Kervolin',
+        'Mali',
+    ];
 
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
@@ -62,6 +80,8 @@ final class UserFactory extends ModelFactory
             'email' => self::faker()->email(),
             'password' => 'carlos17',
             'username' => self::faker()->randomElement(self::USERNAMES) . self::faker()->randomNumber(3),
+            'firstname'=> self::faker()->randomElement(self::FIRSTNAMES),
+            'lastname'=> self::faker()->randomElement(self::LASTNAMES),
         ];
     }
 

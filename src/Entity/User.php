@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -16,9 +19,43 @@ use Symfony\Component\Validator\Contstrains as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ApiResource(
-    normalizationContext: ['groups'=>['user:read']],
-    denormalizationContext: ['groups'=>['user:write']],
-    security: 'is_granted("ROLE_TENANT")'
+    operations: [
+        new Post(
+            uriTemplate: "users/syndicate",
+            security: 'is_granted("ROLE_SYNDIC_CREATE")',
+            name: 'new_user_syndicate',
+
+        ),
+        new Put(
+            uriTemplate: "users/syndicate",
+            security: 'is_granted("ROLE_SYNDIC_EDIT")',
+            name: 'edit_user_syndicate',
+        ),
+        new Post(
+            uriTemplate: "users/owner",
+            security: 'is_granted("ROLE_OWNER_CREATE")',
+            name: 'new_user_owner',
+        ),
+        new Put(
+            uriTemplate: "users/owner",
+            security: 'is_granted("ROLE_OWNER_EDIT")',
+            name: 'edit_user_owner',
+        ),
+        new Post(
+            uriTemplate: "users/tenant",
+            security: 'is_granted("ROLE_TENANT_CREATE")',
+            name: 'new_user_tenant',
+        ),
+        new Put(
+            uriTemplate: "users/tenant",
+            security: 'is_granted("ROLE_TENANT_EDIT")',
+            name: 'edit_user_tenant',
+        ),
+        new GetCollection(
+            uriTemplate: "users/{building-id}",
+            security: 'is_granted("ROLE_USER")',
+        )
+    ]
 )]
 #[UniqueEntity(fields: ['email'],message: 'There is already an account with this email')]
 #[UniqueEntity(fields: ['username'],message: 'There is already an account with this username')]
@@ -40,12 +77,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-    #[ORM\Column]
-
+    #[ORM\Column(nullable: true)]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255,unique:true)]
-
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
     #[Assert\NotBlank]
     private ?string $username = null;
 
@@ -54,6 +89,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $apiTokens;
 
     private ?array $accesTokenScopes = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $firstname = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $lastname = null;
     public function __construct()
     {
         $this->apiTokens = new ArrayCollection();
@@ -191,5 +232,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function markAsTokenAuthenticated(array $scopes):void
     {
         $this->accesTokenScopes = $scopes;
+    }
+
+    public function getFirstname(): ?string
+    {
+        return $this->firstname;
+    }
+
+    public function setFirstname(?string $firstname): self
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+
+    public function setLastname(?string $lastname): self
+    {
+        $this->lastname = $lastname;
+
+        return $this;
     }
 }

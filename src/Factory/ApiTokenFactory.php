@@ -49,7 +49,7 @@ final class ApiTokenFactory extends ModelFactory
         return [
             'ownedBy' => UserFactory::new(),
             'scopes' => [
-                ApiToken::ROLE_TENANT,
+                ApiToken::ROLE_USER,
             ],
         ];
     }
