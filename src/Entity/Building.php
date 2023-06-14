@@ -4,7 +4,10 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\BuildingRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BuildingRepository::class)]
 #[ApiResource]
@@ -16,19 +19,40 @@ class Building
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
     private ?string $city = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
     private ?string $country = null;
 
     #[ORM\Column]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
     private ?int $zipcode = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
     private ?string $street = null;
 
     #[ORM\Column]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
     private ?int $number = null;
+
+    #[ORM\ManyToOne(inversedBy: 'buildings')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Syndicate $syndicate = null;
+
+    #[ORM\OneToMany(mappedBy: 'building', targetEntity: Advertisement::class, orphanRemoval: true)]
+    private Collection $advertisements;
+
+    #[ORM\OneToMany(mappedBy: 'building', targetEntity: Apartment::class, orphanRemoval: true)]
+    private Collection $apartments;
+
+    public function __construct()
+    {
+        $this->advertisements = new ArrayCollection();
+        $this->apartments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -91,6 +115,78 @@ class Building
     public function setNumber(int $number): self
     {
         $this->number = $number;
+
+        return $this;
+    }
+
+    public function getSyndicate(): ?Syndicate
+    {
+        return $this->syndicate;
+    }
+
+    public function setSyndicate(?Syndicate $syndicate): self
+    {
+        $this->syndicate = $syndicate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Advertisement>
+     */
+    public function getAdvertisements(): Collection
+    {
+        return $this->advertisements;
+    }
+
+    public function addAdvertisement(Advertisement $advertisement): self
+    {
+        if (!$this->advertisements->contains($advertisement)) {
+            $this->advertisements->add($advertisement);
+            $advertisement->setBuilding($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdvertisement(Advertisement $advertisement): self
+    {
+        if ($this->advertisements->removeElement($advertisement)) {
+            // set the owning side to null (unless already changed)
+            if ($advertisement->getBuilding() === $this) {
+                $advertisement->setBuilding(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Apartment>
+     */
+    public function getApartments(): Collection
+    {
+        return $this->apartments;
+    }
+
+    public function addApartment(Apartment $apartment): self
+    {
+        if (!$this->apartments->contains($apartment)) {
+            $this->apartments->add($apartment);
+            $apartment->setBuilding($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApartment(Apartment $apartment): self
+    {
+        if ($this->apartments->removeElement($apartment)) {
+            // set the owning side to null (unless already changed)
+            if ($apartment->getBuilding() === $this) {
+                $apartment->setBuilding(null);
+            }
+        }
 
         return $this;
     }

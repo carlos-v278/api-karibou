@@ -6,8 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="f9d610a4-def7-4b3b-bf16-0a8df32f50b0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20230607152620.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20230607154806.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20230607175526.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Advertisement.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Advertisement.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Apartment.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Apartment.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Building.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Building.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/RentReceipt.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/RentReceipt.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Syndicate.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Syndicate.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -146,20 +151,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/carlos/Desktop/carlos/Docker-projects/karibou/karibou-api/src",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/carlos/Desktop/carlos/Docker-projects/karibou/karibou-api/src&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src" />
@@ -182,6 +187,7 @@
       <workItem from="1686140781661" duration="548000" />
       <workItem from="1686141377783" duration="310000" />
       <workItem from="1686141694154" duration="19863000" />
+      <workItem from="1686724696954" duration="7229000" />
     </task>
     <servers />
   </component>

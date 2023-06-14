@@ -22,6 +22,10 @@ class RentReceipt
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?\DateTimeImmutable $date = null;
 
+    #[ORM\ManyToOne(inversedBy: 'rentReceipts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Apartment $apartment = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -47,6 +51,18 @@ class RentReceipt
     public function setDate(\DateTimeImmutable $date): self
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function getApartment(): ?Apartment
+    {
+        return $this->apartment;
+    }
+
+    public function setApartment(?Apartment $apartment): self
+    {
+        $this->apartment = $apartment;
 
         return $this;
     }

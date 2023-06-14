@@ -3,12 +3,11 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -22,6 +21,8 @@ use Symfony\Component\Validator\Contstrains as Assert;
     operations: [
         new Post(
             uriTemplate: "users/syndicate",
+            normalizationContext: ['groups'=> ['user_syndicate:write' ]],
+            denormalizationContext: ['groups'=> ['user_syndicate:write']],
             security: 'is_granted("ROLE_SYNDIC_CREATE")',
             name: 'new_user_syndicate',
 
@@ -73,6 +74,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Email]
+    #[Groups([ 'user_syndicate:write'])]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -82,11 +84,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column(nullable: true)]
+    #[Groups(['user_syndicate:write'])]
     private ?string $password = null;
 
     #[ORM\Column(length: 255, unique: true, nullable: true)]
-    #[Assert\NotBlank]
-    #[Groups(['user:read'])]
+    #[Groups(['user_syndicate:read','user_syndicate:write', 'user:read'])]
     private ?string $username = null;
 
 
@@ -96,15 +98,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?array $accesTokenScopes = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read'])]
+    #[Groups(['user_syndicate:read','user_syndicate:write', 'user:read'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read'])]
+    #[Groups(['user_syndicate:read','user_syndicate:write', 'user:read'])]
     private ?string $lastname = null;
+
+    #[ORM\ManyToMany(targetEntity: Syndicate::class, inversedBy: 'users')]
+    #[Groups(['user_syndicate:read','user_syndicate:write', 'user:read'])]
+    private Collection $syndicates;
+    #[ORM\ManyToOne(inversedBy: 'tenants')]
+    #[Groups([ 'user:read'])]
+    private ?Apartment $apartment = null;
     public function __construct()
     {
         $this->apiTokens = new ArrayCollection();
+        $this->syndicates = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -261,6 +271,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastname(?string $lastname): self
     {
         $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Syndicate>
+     */
+    public function getSyndicates(): Collection
+    {
+        return $this->syndicates;
+    }
+
+    public function addSyndicate(Syndicate $syndicate): self
+    {
+        if (!$this->syndicates->contains($syndicate)) {
+            $this->syndicates->add($syndicate);
+        }
+
+        return $this;
+    }
+
+    public function removeSyndicate(Syndicate $syndicate): self
+    {
+        $this->syndicates->removeElement($syndicate);
+
+        return $this;
+    }
+
+    public function getApartment(): ?Apartment
+    {
+        return $this->apartment;
+    }
+
+    public function setApartment(?Apartment $apartment): self
+    {
+        $this->apartment = $apartment;
 
         return $this;
     }

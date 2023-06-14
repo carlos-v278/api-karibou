@@ -4,7 +4,10 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\SyndicateRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: SyndicateRepository::class)]
 #[ApiResource]
@@ -16,22 +19,41 @@ class Syndicate
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
     private ?string $street = null;
 
     #[ORM\Column]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
     private ?int $street_number = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
     private ?string $siret = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
     private ?string $siren = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
     private ?string $type = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
     private ?string $name = null;
+
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'syndicates')]
+    private Collection $users;
+
+    #[ORM\OneToMany(mappedBy: 'syndicate', targetEntity: Building::class)]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
+    private Collection $buildings;
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+        $this->buildings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -106,6 +128,63 @@ class Syndicate
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addSyndicate($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeSyndicate($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Building>
+     */
+    public function getBuildings(): Collection
+    {
+        return $this->buildings;
+    }
+
+    public function addBuilding(Building $building): self
+    {
+        if (!$this->buildings->contains($building)) {
+            $this->buildings->add($building);
+            $building->setSyndicate($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBuilding(Building $building): self
+    {
+        if ($this->buildings->removeElement($building)) {
+            // set the owning side to null (unless already changed)
+            if ($building->getSyndicate() === $this) {
+                $building->setSyndicate(null);
+            }
+        }
 
         return $this;
     }
