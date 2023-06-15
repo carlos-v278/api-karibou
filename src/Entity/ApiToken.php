@@ -38,7 +38,7 @@ class ApiToken
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'apiTokens')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, )]
     private ?User $ownedBy = null;
 
     #[ORM\Column(nullable: true)]

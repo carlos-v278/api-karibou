@@ -1,9 +1,11 @@
 api_platform:
   formats:
     jsonld: [ 'application/ld+json' ]
-    json: [ 'application/json' ]
+    json: [ 'application/json']
     html: [ 'text/html' ]
     jsonhal: [ 'application/hal+json' ]
+    jonsmerge: ['application/merge-patch+json']
+
   swagger:
     api_keys:
       access_token:

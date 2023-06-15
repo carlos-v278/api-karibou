@@ -3,11 +3,15 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use Doctrine\Common\Collections\ArrayCollection;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Controller\MeController;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -21,38 +25,46 @@ use Symfony\Component\Validator\Contstrains as Assert;
     operations: [
         new Post(
             uriTemplate: "users/syndicate",
+            openapiContext: [
+                'summary'=>'Route qui permet de créer un utilisateur et un syndicat',
+            ],
             normalizationContext: ['groups'=> ['user_syndicate:write' ]],
             denormalizationContext: ['groups'=> ['user_syndicate:write']],
             security: 'is_granted("ROLE_SYNDIC_CREATE")',
             name: 'new_user_syndicate',
 
         ),
-        new Put(
-            uriTemplate: "users/syndicate",
-            security: 'is_granted("ROLE_SYNDIC_EDIT")',
+        new Patch(
+            openapiContext: [
+                'summary'=>'Route qui permet de modifier les informations du User',
+            ],
+            normalizationContext: ['groups'=> ['syndicate:edit']],
+            denormalizationContext: ['groups'=> ['syndicate:edit']],
+            security: 'is_granted("ROLE_SYNDIC_EDIT") and object == user',
             name: 'edit_user_syndicate',
         ),
+   /*     new Get(
+            uriTemplate: "users/me",
+            controller: MeController::class,
+            security: 'is_granted("ROLE_USER")',
+            read: false,
+            name: 'user-me',
+        ),*/
         new Post(
             uriTemplate: "users/owner",
+            openapiContext: [
+                'summary'=>'Route qui permet de creer un propriétaire',
+            ],
+            normalizationContext: ['groups'=> ['user_owner:write']],
+            denormalizationContext: ['groups'=> ['user_owner:write']],
             security: 'is_granted("ROLE_OWNER_CREATE")',
             name: 'new_user_owner',
-        ),
-        new Put(
-            uriTemplate: "users/owner",
-            security: 'is_granted("ROLE_OWNER_EDIT")',
-            name: 'edit_user_owner',
         ),
         new Post(
             uriTemplate: "users/tenant",
             security: 'is_granted("ROLE_TENANT_CREATE")',
             name: 'new_user_tenant',
         ),
-        new Put(
-            uriTemplate: "users/tenant",
-            security: 'is_granted("ROLE_TENANT_EDIT")',
-            name: 'edit_user_tenant',
-        ),
-
         new GetCollection(
             uriTemplate: "users/",
             normalizationContext: ['groups'=> ['user:read']],
@@ -74,7 +86,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Email]
-    #[Groups([ 'user_syndicate:write'])]
+    #[Groups([ 'user_syndicate:write','user:read','user_owner:write'])]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -84,37 +96,46 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column(nullable: true)]
-    #[Groups(['user_syndicate:write'])]
+    #[Groups([ 'user_syndicate:write','user_owner:write','user:read','syndicate:edit'])]
     private ?string $password = null;
 
     #[ORM\Column(length: 255, unique: true, nullable: true)]
-    #[Groups(['user_syndicate:read','user_syndicate:write', 'user:read'])]
+    #[Groups(['user_syndicate:read','user_syndicate:write','user_owner:write', 'user:read'])]
     private ?string $username = null;
 
 
-    #[ORM\OneToMany(mappedBy: 'ownedBy', targetEntity: ApiToken::class)]
+    #[ORM\OneToMany(mappedBy: 'ownedBy', targetEntity: ApiToken::class, cascade: ['persist'])]
     private Collection $apiTokens;
 
     private ?array $accesTokenScopes = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user_syndicate:read','user_syndicate:write', 'user:read'])]
+    #[Groups(['user_syndicate:read','user_syndicate:write','user_owner:write', 'user:read', 'syndicate:edit'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user_syndicate:read','user_syndicate:write', 'user:read'])]
+    #[Groups(['user_syndicate:read','user_syndicate:write','user_owner:write', 'user:read','syndicate:edit'])]
     private ?string $lastname = null;
 
-    #[ORM\ManyToMany(targetEntity: Syndicate::class, inversedBy: 'users')]
+    #[ORM\ManyToMany(targetEntity: Syndicate::class, inversedBy: 'users',cascade: ['persist'])]
     #[Groups(['user_syndicate:read','user_syndicate:write', 'user:read'])]
     private Collection $syndicates;
-    #[ORM\ManyToOne(inversedBy: 'tenants')]
-    #[Groups([ 'user:read'])]
-    private ?Apartment $apartment = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups([ 'syndicate:edit','user_owner:write'])]
+    private ?string $picture = null;
+
+    #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'tenants')]
+    private ?Apartment $location = null;
+
+    #[Groups([ 'syndicate:edit','user_owner:write'])]
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Apartment::class, cascade: ['persist'])]
+    private Collection $properties;
     public function __construct()
     {
         $this->apiTokens = new ArrayCollection();
         $this->syndicates = new ArrayCollection();
+        $this->properties = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -246,6 +267,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 
     }
+    public function getOldTokenRoles():array
+    {
+        return $this->getApiTokens()
+            ->filter(fn (ApiToken $token) => !empty($token->getScopes()))
+            ->map(fn (ApiToken $token) =>$token->getScopes())
+            ->toArray();
+
+
+    }
     public function markAsTokenAuthenticated(array $scopes):void
     {
         $this->accesTokenScopes = $scopes;
@@ -299,14 +329,60 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getApartment(): ?Apartment
+
+
+
+
+    public function getPicture(): ?string
     {
-        return $this->apartment;
+        return $this->picture;
     }
 
-    public function setApartment(?Apartment $apartment): self
+    public function setPicture(?string $picture): static
     {
-        $this->apartment = $apartment;
+        $this->picture = $picture;
+
+        return $this;
+    }
+
+    public function getLocation(): ?Apartment
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Apartment $location): static
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Apartment>
+     */
+    public function getProperties(): Collection
+    {
+        return $this->properties;
+    }
+
+    public function addProperty(Apartment $property): static
+    {
+        if (!$this->properties->contains($property)) {
+            $this->properties->add($property);
+            $property->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProperty(Apartment $property): static
+    {
+        if ($this->properties->removeElement($property)) {
+            // set the owning side to null (unless already changed)
+            if ($property->getOwner() === $this) {
+                $property->setOwner(null);
+            }
+        }
 
         return $this;
     }

@@ -50,6 +50,10 @@ final class ApiTokenFactory extends ModelFactory
             'ownedBy' => UserFactory::new(),
             'scopes' => [
                 ApiToken::ROLE_USER,
+                ApiToken::ROLE_SYNDIC_CREATE,
+                ApiToken::ROLE_SYNDIC_EDIT,
+                "ROLE_FULL_GOD"
+
             ],
         ];
     }

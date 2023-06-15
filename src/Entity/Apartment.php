@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ApartmentRepository::class)]
-#[ApiResource]
 class Apartment
 {
     #[ORM\Id]
@@ -19,32 +18,36 @@ class Apartment
     private ?int $id = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write','user_owner:write'])]
     private ?int $number = null;
 
     #[ORM\Column]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write','user_owner:write'])]
     private ?int $floor = null;
-
+    #[Groups(['user_owner:write'])]
     #[ORM\Column(nullable: true)]
     private ?int $rent = null;
-
+    #[Groups(['user_owner:write'])]
     #[ORM\Column(nullable: true)]
     private ?int $extra_charge = null;
 
     #[ORM\ManyToOne(inversedBy: 'apartments')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['user_owner:write'])]
     private ?Building $building = null;
+
 
     #[ORM\OneToMany(mappedBy: 'apartment', targetEntity: RentReceipt::class)]
     private Collection $rentReceipts;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
+    #[ORM\OneToMany(mappedBy: 'location', targetEntity: User::class)]
+    private Collection $tenants;
+
+    #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'properties')]
     private ?User $owner = null;
 
-    #[ORM\OneToMany(mappedBy: 'apartment', targetEntity: User::class)]
-    private Collection $tenants;
+
+
 
     public function __construct()
     {
@@ -147,17 +150,12 @@ class Apartment
         return $this;
     }
 
-    public function getOwner(): ?User
-    {
-        return $this->owner;
-    }
 
-    public function setOwner(?User $owner): self
-    {
-        $this->owner = $owner;
 
-        return $this;
-    }
+
+    /**
+     * @return Collection<int, User>
+     */
 
     /**
      * @return Collection<int, User>
@@ -167,25 +165,42 @@ class Apartment
         return $this->tenants;
     }
 
-    public function addTenant(User $tenant): self
+    public function addTenant(User $tenant): static
     {
         if (!$this->tenants->contains($tenant)) {
             $this->tenants->add($tenant);
-            $tenant->setApartment($this);
+            $tenant->setLocation($this);
         }
 
         return $this;
     }
 
-    public function removeTenant(User $tenant): self
+    public function removeTenant(User $tenant): static
     {
         if ($this->tenants->removeElement($tenant)) {
             // set the owning side to null (unless already changed)
-            if ($tenant->getApartment() === $this) {
-                $tenant->setApartment(null);
+            if ($tenant->getLocation() === $this) {
+                $tenant->setLocation(null);
             }
         }
 
         return $this;
     }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+
+
+
+
 }

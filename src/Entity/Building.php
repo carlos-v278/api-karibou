@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\BuildingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,7 +11,14 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BuildingRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            normalizationContext: ['groups'=> ['building:read']],
+            security: 'is_granted("ROLE_USER")',
+        )
+    ]
+)]
 class Building
 {
     #[ORM\Id]
@@ -19,7 +27,7 @@ class Building
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write', 'building:read'])]
     private ?string $city = null;
 
     #[ORM\Column(length: 255)]

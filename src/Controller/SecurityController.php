@@ -43,12 +43,11 @@ class SecurityController extends AbstractController
             $token = $user->getValidTokenStrings();
             //check if a valid token exist
             if(empty($user->getValidTokenStrings())){
+
                 $apiToken = new ApiToken();
                 $apiToken->setOwnedBy($user);
                 $token = [$apiToken->getToken()];
-                $apiToken->setScopes([
-                    $apiToken::ROLE_USER,
-                ]);
+                $apiToken->setScopes( $user->getRoles());
                 $em->persist($apiToken);
                 $em->flush();
 
