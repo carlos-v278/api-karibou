@@ -29,6 +29,8 @@ services:
       - database
     volumes:
       - "${ROOT_PATH:-../}${ENGINE_PATH:-./karibou-api}:/var/www"
+      - "${ROOT_PATH:-../}${DOCKER_DIR:-DockerKaribou}/back/conf/php.ini:/var/www"
+
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER:-karibou}:${POSTGRES_PASSWORD:-H^FtLYj8!r09}@database:5432/${POSTGRES_DB:-karibou}
     working_dir: /var/www

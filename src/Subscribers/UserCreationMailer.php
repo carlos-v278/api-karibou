@@ -66,7 +66,16 @@ class UserCreationMailer implements EventSubscriberInterface
             }
         }
         if(strpos($uri, "/users/tenant") &&  $method ==='POST' ){
-            dd('ergr');
+            if($user instanceof  User){
+                $passwords= $this->userService->getRandPassword($user);
+                $user->setPassword($passwords['hashedPassword']);
+                $email = (new Email())
+                    ->from('karibou.website@outlook.fr')
+                    ->to('carlosvieira278@gmail.com')
+                    ->subject('creation de compte')
+                    ->html("hello world " . $passwords['password']);
+                $this->mailer->send($email);
+            }
         }
 
     }

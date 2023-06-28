@@ -40,13 +40,13 @@ class SecurityController extends AbstractController
         );
         //if the password it's good set and send the token
         if($passwordIsValid){
-            $token = $user->getValidTokenStrings();
+            $token = array_values($user->getValidTokenStrings());
+            $token = (count($token) >0 ? $token[0] : $token) ;
             //check if a valid token exist
             if(empty($user->getValidTokenStrings())){
-
                 $apiToken = new ApiToken();
                 $apiToken->setOwnedBy($user);
-                $token = [$apiToken->getToken()];
+                $token = $apiToken->getToken();
                 $apiToken->setScopes( $user->getRoles());
                 $em->persist($apiToken);
                 $em->flush();
@@ -72,41 +72,8 @@ class SecurityController extends AbstractController
     {
         throw new \Exception('This should never be reached');
     }
-    #[Route('/inscription', name: 'app_registration',methods: ['POST'])]
-    public function index(ManagerRegistry $doctrine, Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
-    {
-        $em = $doctrine->getManager();
-        $decoded = json_decode($request->getContent());
 
-        $email = $decoded->email;
-        $plaintextPassword = $decoded->password;
-        $userName=$decoded->username;
-        $user = new User();
-        $hashedPassword = $passwordHasher->hashPassword(
-            $user,
-            $plaintextPassword,
-        );
-        $user->setPassword($hashedPassword);
-        $user->setEmail($email);
-        $user->setUsername($userName);
-        $em->persist($user);
-        $em->flush();
 
-        return $this->json(['message' => 'Registered successfully!']);
-    }
 
-    #[Route('/invitation-syndic', name: 'app_invitation_syndic',methods: ['POST'])]
-    public function syndic(ManagerRegistry $doctrine, Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
-    {
-        $em = $doctrine->getManager();
-        $decoded = json_decode($request->getContent());
-        $email = $decoded->email;
-        $user = new User();
-        $user->setEmail($email);
-        $em->persist($user);
-        $em->flush();
-
-        return $this->json(['message' => 'Registered successfully!']);
-    }
 
 }

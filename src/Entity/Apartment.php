@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Put;
 use App\Repository\ApartmentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,6 +13,22 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ApartmentRepository::class)]
+#[ApiResource(
+    operations: [
+        new Patch(
+            openapiContext: [
+                'summary'=>'Route qui permet de modifier un appartement',
+            ],
+            denormalizationContext: ['groups'=> ['apartment:write']],
+            security: 'is_granted("ROLE_OWNER_EDIT")',
+            name: 'edit_apartment',
+        ),
+        new GetCollection(
+            normalizationContext: ['groups'=> ['apartment:read']],
+            security: 'is_granted("ROLE_USER")',
+        )
+    ]
+)]
 class Apartment
 {
     #[ORM\Id]
@@ -18,22 +37,22 @@ class Apartment
     private ?int $id = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write','user_owner:write'])]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write','user_owner:write','apartment:read'])]
     private ?int $number = null;
 
     #[ORM\Column]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write','user_owner:write'])]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write','user_owner:write','apartment:read'])]
     private ?int $floor = null;
-    #[Groups(['user_owner:write'])]
     #[ORM\Column(nullable: true)]
+    #[Groups(['user_owner:write','apartment:write','apartment:read'])]
     private ?int $rent = null;
-    #[Groups(['user_owner:write'])]
     #[ORM\Column(nullable: true)]
+    #[Groups(['user_owner:write','apartment:write','apartment:read'])]
     private ?int $extra_charge = null;
 
     #[ORM\ManyToOne(inversedBy: 'apartments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['user_owner:write'])]
+    #[Groups(['user_owner:write','apartment:read'])]
     private ?Building $building = null;
 
 
@@ -41,8 +60,10 @@ class Apartment
     private Collection $rentReceipts;
 
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: User::class)]
+    #[Groups([ 'apartment:write','apartment:read'])]
     private Collection $tenants;
 
+    #[Groups(['apartment:read'])]
     #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'properties')]
     private ?User $owner = null;
 

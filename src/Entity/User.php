@@ -35,6 +35,8 @@ use Symfony\Component\Validator\Contstrains as Assert;
 
         ),
         new Patch(
+            uriTemplate: "users/{id}",
+            requirements: ['id' => '\d+'],
             openapiContext: [
                 'summary'=>'Route qui permet de modifier les informations du User',
             ],
@@ -43,13 +45,13 @@ use Symfony\Component\Validator\Contstrains as Assert;
             security: 'is_granted("ROLE_SYNDIC_EDIT") and object == user',
             name: 'edit_user_syndicate',
         ),
-   /*     new Get(
+        new Get(
             uriTemplate: "users/me",
             controller: MeController::class,
             security: 'is_granted("ROLE_USER")',
-            read: false,
+            read: true,
             name: 'user-me',
-        ),*/
+        ),
         new Post(
             uriTemplate: "users/owner",
             openapiContext: [
@@ -62,6 +64,11 @@ use Symfony\Component\Validator\Contstrains as Assert;
         ),
         new Post(
             uriTemplate: "users/tenant",
+            openapiContext: [
+                'summary'=>'Route qui permet de creer un locataire',
+            ],
+            normalizationContext: ['groups'=> ['user_tenant:write']],
+            denormalizationContext: ['groups'=> ['user_tenant:write']],
             security: 'is_granted("ROLE_TENANT_CREATE")',
             name: 'new_user_tenant',
         ),
@@ -69,7 +76,7 @@ use Symfony\Component\Validator\Contstrains as Assert;
             uriTemplate: "users/",
             normalizationContext: ['groups'=> ['user:read']],
             denormalizationContext: ['groups'=> ['read:user:collection']],
-            security: 'is_granted("ROLE_USER")',
+            security: 'is_granted("ROLE_TENANT_EDIT")',
         )
     ]
 )]
@@ -86,7 +93,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Email]
-    #[Groups([ 'user_syndicate:write','user:read','user_owner:write'])]
+    #[Groups([ 'user_syndicate:write','user:read','user_owner:write', 'user_tenant:write'])]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -100,7 +107,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255, unique: true, nullable: true)]
-    #[Groups(['user_syndicate:read','user_syndicate:write','user_owner:write', 'user:read'])]
+    #[Groups(['user_syndicate:read','user_syndicate:write','user_owner:write', 'user:read','user_tenant:write'])]
     private ?string $username = null;
 
 
@@ -110,11 +117,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?array $accesTokenScopes = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user_syndicate:read','user_syndicate:write','user_owner:write', 'user:read', 'syndicate:edit'])]
+    #[Groups(['user_syndicate:read','user_syndicate:write','user_owner:write', 'user:read', 'syndicate:edit','user_tenant:write'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user_syndicate:read','user_syndicate:write','user_owner:write', 'user:read','syndicate:edit'])]
+    #[Groups(['user_syndicate:read','user_syndicate:write','user_owner:write', 'user:read','syndicate:edit','user_tenant:write'])]
     private ?string $lastname = null;
 
     #[ORM\ManyToMany(targetEntity: Syndicate::class, inversedBy: 'users',cascade: ['persist'])]

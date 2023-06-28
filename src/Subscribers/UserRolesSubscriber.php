@@ -61,7 +61,14 @@ class UserRolesSubscriber implements EventSubscriberInterface
             }
         }
         if(strpos($uri, "/users/tenant") &&  $method ==='POST' ){
-            dd('ergr');
+            if($user instanceof  User){
+                $user->setRoles([
+                    "ROLE_TENANT_EDIT",
+                    "ROLE_USER"
+                ]);
+
+
+            }
         }
 
     }
