@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     operations: [
         new GetCollection(
             normalizationContext: ['groups'=> ['building:read']],
-            security: 'is_granted("ROLE_USER")',
+
         )
     ]
 )]
@@ -24,26 +24,27 @@ class Building
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['apartment:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write', 'building:read'])]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write', 'building:read','apartment:read'])]
     private ?string $city = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write','apartment:read'])]
     private ?string $country = null;
 
     #[ORM\Column]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write','apartment:read'])]
     private ?int $zipcode = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write','apartment:read'])]
     private ?string $street = null;
 
     #[ORM\Column]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write'])]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write','apartment:read'])]
     private ?int $number = null;
 
     #[ORM\ManyToOne(inversedBy: 'buildings')]

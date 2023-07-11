@@ -6,13 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="f9d610a4-def7-4b3b-bf16-0a8df32f50b0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/SecurityController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SecurityController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/nelmio_cors.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/nelmio_cors.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Doctrine/CurrentUserExtension.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Doctrine/CurrentUserExtension.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/Apartment.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Apartment.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Building.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Building.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Subscribers/UserCreationMailer.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Subscribers/UserCreationMailer.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Subscribers/UserRolesSubscriber.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Subscribers/UserRolesSubscriber.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -198,7 +197,8 @@
       <workItem from="1686724696954" duration="7229000" />
       <workItem from="1687264080236" duration="1204000" />
       <workItem from="1687783265829" duration="7910000" />
-      <workItem from="1687958447746" duration="2697000" />
+      <workItem from="1687958447746" duration="5098000" />
+      <workItem from="1689066211738" duration="12350000" />
     </task>
     <servers />
   </component>

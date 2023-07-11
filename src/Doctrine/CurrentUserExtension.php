@@ -5,6 +5,7 @@ use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
+use App\Entity\Apartment;
 use App\Entity\Building;
 use Doctrine\ORM\QueryBuilder;
 use App\Entity\User;
@@ -20,6 +21,7 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
 
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass):void{
         $user = $this->security->getUser();
+        $rolesUser = $user->getRoles();
 
         if(
             ($resourceClass === Building::class )
@@ -27,13 +29,31 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
             && $user instanceof User
         ){
             $rootAlias = $queryBuilder->getRootAliases()[0];
-
             $queryBuilder->join("$rootAlias.syndicate", "s")
             ->join("s.users", "u")
 
                 ->andWhere("u.id = :user");
             $queryBuilder->setParameter("user", $user);
         }
+        if(
+            ($resourceClass === Apartment::class )
+            && !$this->authorizationChecker->isGranted('ROLE_ADMIN')
+            && $user instanceof User
+        ){
+
+            $rootAlias = $queryBuilder->getRootAliases()[0];
+
+            if(in_array("ROLE_OWNER_EDIT", $rolesUser)){
+                $queryBuilder->join("$rootAlias.owner", "p")
+                    ->andWhere("p.id = :user");
+
+            } else{
+                $queryBuilder->join("$rootAlias.tenants", "t")
+                    ->andWhere("t.id = :user");
+            }
+            $queryBuilder->setParameter("user", $user);
+        }
+
 
     }
 

@@ -34,6 +34,7 @@ class Apartment
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['apartment:read'])]
     private ?int $id = null;
 
     #[ORM\Column(nullable: true)]
@@ -63,8 +64,8 @@ class Apartment
     #[Groups([ 'apartment:write','apartment:read'])]
     private Collection $tenants;
 
-    #[Groups(['apartment:read'])]
     #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'properties')]
+    #[Groups(['apartment:read'])]
     private ?User $owner = null;
 
 
