@@ -9,9 +9,11 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Controller\MeController;
+use App\Controller\MyProfileController;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -44,13 +46,6 @@ use Symfony\Component\Validator\Contstrains as Assert;
             denormalizationContext: ['groups'=> ['syndicate:edit']],
             security: 'is_granted("ROLE_SYNDIC_EDIT") and object == user',
             name: 'edit_user_syndicate',
-        ),
-        new Get(
-            uriTemplate: "users/me",
-            controller: MeController::class,
-            security: 'is_granted("ROLE_USER")',
-            read: true,
-            name: 'user-me',
         ),
         new Post(
             uriTemplate: "users/owner",
@@ -282,6 +277,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             ->map(fn (ApiToken $token) =>$token->getScopes())
             ->toArray();
 
+
+    }
+    public function invalidateAllTokens(EntityManagerInterface $entityManager):void
+    {
+        $tokens = $this->getApiTokens();
+        foreach ($tokens as $token) {
+            if ($token->isValid()) {
+                $token->setExpiresAt(new \DateTimeImmutable());
+            }
+        }
+
+        $entityManager->flush();
 
     }
     public function markAsTokenAuthenticated(array $scopes):void

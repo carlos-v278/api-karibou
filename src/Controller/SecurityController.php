@@ -5,18 +5,24 @@ namespace App\Controller;
 use ApiPlatform\Api\IriConverterInterface;
 use App\Entity\ApiToken;
 use App\Entity\User;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class SecurityController extends AbstractController
 {
-    #[Route('/connexion', name: 'app_login',methods: ['POST'])]
+    #[Route('/login', name: 'app_login',methods: ['POST'])]
     public function login(
         Request $request,
         IriConverterInterface $iriConverter,
@@ -67,11 +73,44 @@ class SecurityController extends AbstractController
         ], 401);
     }
 
-    #[Route('/deconnexion', name: 'app_logout',methods: ['POST'])]
-    public function logout(): void
+    #[Route('/logout', name: 'app_logout')]
+    public function logout(Security $security, EntityManagerInterface $entityManager): Response
     {
-        throw new \Exception('This should never be reached');
+        $user = $security->getUser();
+
+        if ($user instanceof User) {
+            $user->invalidateAllTokens($entityManager);
+            $entityManager->flush();
+        }
+
+        return $this->json([
+            'logout' => 'success',
+        ], 200);
     }
+
+    #[Route('/users/profile', name: 'app_my_profile', methods: ['GET'])]
+    public function profile(Security $security): Response
+    {
+        // controller can be blank: it will never be called!
+        // logout the user in on the current firewall
+        $user = $security->getUser();
+
+        // you can also disable the csrf logout
+
+        return $this->json([
+            'username' => $user->getUsername(),
+            'email' => $user->getEmail(),
+            'firstName'=> $user->getFirstName(),
+            'lastName'=> $user->getLastName(),
+            'roles'=> $user->getRoles(),
+            'id'=> $user->getId(),
+            'picture'=> $user->getPicture(),
+
+
+
+        ], 200);
+    }
+
 
 
 

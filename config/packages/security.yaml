@@ -33,8 +33,6 @@ security:
                 username_path: email
                 password_path: password
             stateless: true
-            logout:
-                path: app_logout
             access_token:
                 token_handler: App\Security\ApiTokenHandler
 

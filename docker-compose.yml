@@ -30,6 +30,8 @@ services:
     volumes:
       - "${ROOT_PATH:-../}${ENGINE_PATH:-./karibou-api}:/var/www"
       - "${ROOT_PATH:-../}${DOCKER_DIR:-DockerKaribou}/back/conf/php.ini:/var/www"
+      - "${ROOT_PATH:-../}${DOCKER_DIR:-DockerKaribou}/back/conf/php.ini:/etc/apache2/conf-available/z-app.conf"
+      - "${ROOT_PATH:-../}${DOCKER_DIR:-DockerKaribou}/back/conf/apache.conf:/etc/apache2/sites-available/000-default.conf"
 
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER:-karibou}:${POSTGRES_PASSWORD:-H^FtLYj8!r09}@database:5432/${POSTGRES_DB:-karibou}
