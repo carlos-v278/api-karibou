@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Controller\MeController;
 use App\Controller\MyProfileController;
+use App\Controller\UserPictureController;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -20,8 +21,14 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Contstrains as Assert;
-
+use Symfony\Component\HttpFoundation\File\File;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+
+/**
+ * @ORM\Entity
+ * @Vich\Uploadable
+ */
+
 #[ORM\Table(name: '`user`')]
 #[ApiResource(
     operations: [
@@ -42,10 +49,10 @@ use Symfony\Component\Validator\Contstrains as Assert;
             openapiContext: [
                 'summary'=>'Route qui permet de modifier les informations du User',
             ],
-            normalizationContext: ['groups'=> ['syndicate:edit']],
-            denormalizationContext: ['groups'=> ['syndicate:edit']],
-            security: 'is_granted("ROLE_SYNDIC_EDIT") and object == user',
-            name: 'edit_user_syndicate',
+            normalizationContext: ['groups'=> ['user:edit']],
+            denormalizationContext: ['groups'=> ['user:edit']],
+            security: 'is_granted("ROLE_USER") and object == user',
+            name: 'edit_user',
         ),
         new Post(
             uriTemplate: "users/owner",
@@ -66,6 +73,13 @@ use Symfony\Component\Validator\Contstrains as Assert;
             denormalizationContext: ['groups'=> ['user_tenant:write']],
             security: 'is_granted("ROLE_TENANT_CREATE")',
             name: 'new_user_tenant',
+        ),
+        new Post(
+            uriTemplate: "users/{id}/picture",
+            controller: UserPictureController::class,
+            deserialize: false,
+            security: 'is_granted("ROLE_USER")',
+
         ),
         new GetCollection(
             uriTemplate: "users/",
@@ -99,11 +113,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column(nullable: true)]
-    #[Groups([ 'user_syndicate:write','user_owner:write','user:read','syndicate:edit'])]
+    #[Groups([ 'user_syndicate:write','user_owner:write','user:read','user:edit'])]
     private ?string $password = null;
 
     #[ORM\Column(length: 255, unique: true, nullable: true)]
-    #[Groups(['user_syndicate:read','user_syndicate:write','user_owner:write', 'user:read','user_tenant:write','apartment:read'])]
+    #[Groups(['user:edit','user_syndicate:read','user_syndicate:write','user_owner:write', 'user:read','user_tenant:write','apartment:read'])]
     private ?string $username = null;
 
 
@@ -113,25 +127,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?array $accesTokenScopes = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user_syndicate:read','user_syndicate:write','user_owner:write', 'user:read', 'syndicate:edit','user_tenant:write','apartment:read'])]
+    #[Groups(['user_syndicate:read','user_syndicate:write','user_owner:write', 'user:read', 'user:edit','user_tenant:write','apartment:read'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user_syndicate:read','user_syndicate:write','user_owner:write', 'user:read','syndicate:edit','user_tenant:write','apartment:read'])]
+    #[Groups(['user_syndicate:read','user_syndicate:write','user_owner:write', 'user:read','user:edit','user_tenant:write','apartment:read'])]
     private ?string $lastname = null;
 
     #[ORM\ManyToMany(targetEntity: Syndicate::class, inversedBy: 'users',cascade: ['persist'])]
     #[Groups(['user_syndicate:read','user_syndicate:write', 'user:read'])]
     private Collection $syndicates;
 
+    /**
+     * @var File|null
+     * @Vich\UploadableField(mapping="user_picture", fileNameProperty="picture")
+     */
+    private $file;
+
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups([ 'syndicate:edit','user_owner:write','apartment:read'])]
+    #[Groups([ 'user:edit','user_owner:write','apartment:read'])]
     private ?string $picture = null;
 
     #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'tenants')]
     private ?Apartment $location = null;
 
-    #[Groups([ 'syndicate:edit','user_owner:write','user:read'])]
+    #[Groups([ 'user:edit','user_owner:write','user:read'])]
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Apartment::class, cascade: ['persist'])]
     private Collection $properties;
     public function __construct()
@@ -346,8 +366,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 
 
-
-
     public function getPicture(): ?string
     {
         return $this->picture;
@@ -399,6 +417,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * @return  File|null
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * @param File|null $file
+     * @return  User
+     */
+    public function setFile(?File $file ):User
+    {
+        $this->file = $file;
         return $this;
     }
 }

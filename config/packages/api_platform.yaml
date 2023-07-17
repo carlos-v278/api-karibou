@@ -5,6 +5,7 @@ api_platform:
     html: [ 'text/html' ]
     jsonhal: [ 'application/hal+json' ]
     jonsmerge: ['application/merge-patch+json']
+    multipart: ['multipart/form-data']
 
   swagger:
     api_keys:
