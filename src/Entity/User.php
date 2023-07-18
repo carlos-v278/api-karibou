@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use App\Controller\MeController;
 use App\Controller\MyProfileController;
 use App\Controller\UserPictureController;
@@ -20,16 +19,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Contstrains as Assert;
 use Symfony\Component\HttpFoundation\File\File;
-#[ORM\Entity(repositoryClass: UserRepository::class)]
-
-/**
- * @ORM\Entity
- * @Vich\Uploadable
- */
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+#[Vich\Uploadable]
 
 #[ORM\Table(name: '`user`')]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
     operations: [
         new Post(
@@ -74,14 +70,16 @@ use Symfony\Component\HttpFoundation\File\File;
             security: 'is_granted("ROLE_TENANT_CREATE")',
             name: 'new_user_tenant',
         ),
+
         new Post(
             uriTemplate: "users/{id}/picture",
             controller: UserPictureController::class,
-            deserialize: false,
-            security: 'is_granted("ROLE_USER")',
-
+            validationContext: ['groups' => ['Default', 'media_object_create']],
+            normalizationContext: ['groups'=> ['user_picture:read']],
+            denormalizationContext: ['groups'=> ['user_picture:write']],
+            deserialize: false
         ),
-        new GetCollection(
+            new GetCollection(
             uriTemplate: "users/",
             normalizationContext: ['groups'=> ['user:read']],
             denormalizationContext: ['groups'=> ['user:read']],
@@ -97,7 +95,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['apartment:read'])]
+    #[Groups(['apartment:read','user_picture:read', 'user_picture:write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
@@ -138,14 +136,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user_syndicate:read','user_syndicate:write', 'user:read'])]
     private Collection $syndicates;
 
-    /**
-     * @var File|null
-     * @Vich\UploadableField(mapping="user_picture", fileNameProperty="picture")
-     */
-    private $file;
+    #[Vich\UploadableField(mapping: "user_pic", fileNameProperty: "picture")]
+    #[Assert\NotNull(groups: ['media_object_create'])]
+    public ?File $file = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Groups([ 'user:edit','user_owner:write','apartment:read'])]
+    #[ORM\Column(length: 255, nullable: true,)]
+    #[Groups([ 'user:edit','user_owner:write','apartment:read','user_picture:read','user_picture:write'])]
     private ?string $picture = null;
 
     #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'tenants')]
@@ -154,8 +150,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups([ 'user:edit','user_owner:write','user:read'])]
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Apartment::class, cascade: ['persist'])]
     private Collection $properties;
+
+    #[ORM\Column(nullable: false)]
+    private ?\DateTimeImmutable $createdAt;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updateAt;
+
+
     public function __construct()
     {
+        $this->createdAt= new \DateTimeImmutable();
+        $this->updateAt= new \DateTimeImmutable();
         $this->apiTokens = new ArrayCollection();
         $this->syndicates = new ArrayCollection();
         $this->properties = new ArrayCollection();
@@ -437,4 +443,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->file = $file;
         return $this;
     }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdateAt(): ?\DateTimeImmutable
+    {
+        return $this->updateAt;
+    }
+
+    public function setUpdateAt(\DateTimeImmutable $updateAt)
+    {
+        $this->updateAt = $updateAt;
+        return $this;
+    }
+
+
+
+
 }

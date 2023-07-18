@@ -10,21 +10,26 @@ use Vich\UploaderBundle\Storage\StorageInterface;
 final class UserNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     use NormalizerAwareTrait;
-    private const ALREADY_CALLED = 'MEDIA_OBJECT_NORMALIZER_ALREADY_CALLED';
-    public function __construct(private StorageInterface $storage)
+    private const ALREADY_CALLED = 'APPUserNormalizerAlreadyCalled';
+
+    public function  __construct( private StorageInterface $storage)
     {
     }
-    public function normalize($object, ?string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
+
+    public function supportsNormalization(mixed $data, string $format = null, array $context = [])
     {
-        $context[self::ALREADY_CALLED] = true;
-        $object->contentUrl = $this->storage->resolveUri($object, 'file');
+        return !isset($context[self::ALREADY_CALLED]) && $data instanceof User;
+        // TODO: Implement supportsNormalization() method.
+    }
+    public function normalize(mixed $object, string $format = null, array $context = [])
+    {
+        $object->setPicture($this->storage->resolveUri($object, 'file' ));
+        $context[self::ALREADY_CALLED] =true;
         return $this->normalizer->normalize($object, $format, $context);
     }
-    public function supportsNormalization($data, ?string $format = null, array $context = []): bool
-    {
-        if (isset($context[self::ALREADY_CALLED])) {
-            return false;
-        }
-        return $data instanceof User;
-    }
+
+
+
+
+
 }
