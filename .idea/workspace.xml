@@ -6,12 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f9d610a4-def7-4b3b-bf16-0a8df32f50b0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/vich_uploader.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/vich_uploader.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/uploads/pictures/profiles/adobestock-253980681-min-2-64b69afdddbef668123611.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/UserPictureController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserPictureController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/me/index.html.twig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user_picture/index.html.twig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-entrypoint.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker-entrypoint.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
