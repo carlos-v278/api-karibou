@@ -13,6 +13,7 @@ final class UserPictureController extends AbstractController
     public function __invoke(User $user, Request $request)
     {
         $user = $request->attributes->get('data');
+
         if (!$user instanceof User) {
             throw new \RuntimeException('User entendu');
         }

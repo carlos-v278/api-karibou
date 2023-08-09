@@ -74,16 +74,23 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         new Post(
             uriTemplate: "users/{id}/picture",
             controller: UserPictureController::class,
-            validationContext: ['groups' => ['Default', 'media_object_create']],
             normalizationContext: ['groups'=> ['user_picture:read']],
             denormalizationContext: ['groups'=> ['user_picture:write']],
+            validationContext: ['groups' => ['Default', 'media_object_create']],
             deserialize: false
         ),
-            new GetCollection(
+        new GetCollection(
             uriTemplate: "users/",
             normalizationContext: ['groups'=> ['user:read']],
             denormalizationContext: ['groups'=> ['user:read']],
             security: 'is_granted("ROLE_TENANT_EDIT")',
+        ),
+        new GetCollection(
+            uriTemplate: "me/",
+            controller: MeController::class,
+            paginationEnabled: false,
+            normalizationContext: ['groups'=> ['user_me:read']],
+            security: 'is_granted("ROLE_USER")',
         )
     ]
 )]
@@ -95,27 +102,51 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['apartment:read','user_picture:read', 'user_picture:write'])]
+    #[Groups(['apartment:read',
+        'user_picture:read',
+        'user_picture:write',
+        'user_me:read'
+    ])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Email]
-    #[Groups([ 'user_syndicate:write','user:read','user_owner:write', 'user_tenant:write','apartment:read'])]
+    #[Groups([ 'user_syndicate:write',
+        'user:read',
+        'user_owner:write',
+        'user_tenant:write',
+        'apartment:read',
+        'user_me:read'
+    ])]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Groups(['user_me:read'])]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column(nullable: true)]
-    #[Groups([ 'user_syndicate:write','user_owner:write','user:read','user:edit'])]
+    #[Groups([
+        'user_syndicate:write',
+        'user_owner:write',
+        'user:read',
+        'user:edit'
+    ])]
     private ?string $password = null;
 
     #[ORM\Column(length: 255, unique: true, nullable: true)]
-    #[Groups(['user:edit','user_syndicate:read','user_syndicate:write','user_owner:write', 'user:read','user_tenant:write','apartment:read'])]
+    #[Groups(['user:edit',
+        'user_syndicate:read',
+        'user_syndicate:write',
+        'user_owner:write',
+        'user:read',
+        'user_tenant:write',
+        'apartment:read',
+        'user_me:read'
+    ])]
     private ?string $username = null;
 
 
@@ -125,15 +156,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?array $accesTokenScopes = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user_syndicate:read','user_syndicate:write','user_owner:write', 'user:read', 'user:edit','user_tenant:write','apartment:read'])]
+    #[Groups([
+        'user_syndicate:read',
+        'user_syndicate:write',
+        'user_owner:write',
+        'user:read',
+        'user:edit',
+        'user_tenant:write',
+        'apartment:read',
+        'user_me:read'
+        ])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user_syndicate:read','user_syndicate:write','user_owner:write', 'user:read','user:edit','user_tenant:write','apartment:read'])]
+    #[Groups([
+        'user_syndicate:read',
+        'user_syndicate:write',
+        'user_owner:write',
+        'user:read',
+        'user:edit',
+        'user_tenant:write',
+        'apartment:read',
+        'user_me:read'
+    ])]
     private ?string $lastname = null;
 
     #[ORM\ManyToMany(targetEntity: Syndicate::class, inversedBy: 'users',cascade: ['persist'])]
-    #[Groups(['user_syndicate:read','user_syndicate:write', 'user:read'])]
+    #[Groups([
+        'user_syndicate:read',
+        'user_syndicate:write',
+        'user:read'
+    ])]
     private Collection $syndicates;
 
     #[Vich\UploadableField(mapping: "user_pic", fileNameProperty: "picture")]
@@ -141,13 +194,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public ?File $file = null;
 
     #[ORM\Column(length: 255, nullable: true,)]
-    #[Groups([ 'user:edit','user_owner:write','apartment:read','user_picture:read','user_picture:write'])]
+    #[Groups([
+        'user:edit',
+        'user_owner:write',
+        'apartment:read',
+        'user_picture:read',
+        'user_picture:write',
+        'user_me:read'
+    ])]
     private ?string $picture = null;
 
     #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'tenants')]
     private ?Apartment $location = null;
 
-    #[Groups([ 'user:edit','user_owner:write','user:read'])]
+    #[Groups([
+        'user:edit',
+        'user_owner:write',
+        'user:read'
+    ])]
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Apartment::class, cascade: ['persist'])]
     private Collection $properties;
 
