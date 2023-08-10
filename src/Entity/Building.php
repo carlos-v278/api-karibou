@@ -24,7 +24,7 @@ class Building
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['apartment:read'])]
+    #[Groups(['apartment:read','building:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -32,19 +32,19 @@ class Building
     private ?string $city = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write','apartment:read'])]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write','apartment:read','building:read'])]
     private ?string $country = null;
 
     #[ORM\Column]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write','apartment:read'])]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write','apartment:read','building:read'])]
     private ?int $zipcode = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write','apartment:read'])]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write','apartment:read','building:read'])]
     private ?string $street = null;
 
     #[ORM\Column]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write','apartment:read'])]
+    #[Groups(['user_syndicate:read', 'user_syndicate:write','apartment:read','building:read'])]
     private ?int $number = null;
 
     #[ORM\ManyToOne(inversedBy: 'buildings')]

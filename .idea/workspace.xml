@@ -6,8 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="f9d610a4-def7-4b3b-bf16-0a8df32f50b0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-entrypoint.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker-entrypoint.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Building.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Building.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Subscribers/UserCreationMailer.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Subscribers/UserCreationMailer.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -200,6 +201,7 @@
       <workItem from="1689066211738" duration="12350000" />
       <workItem from="1691587815738" duration="537000" />
       <workItem from="1691588459640" duration="897000" />
+      <workItem from="1691602572872" duration="2298000" />
     </task>
     <servers />
   </component>

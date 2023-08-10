@@ -35,7 +35,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             ],
             normalizationContext: ['groups'=> ['user_syndicate:write' ]],
             denormalizationContext: ['groups'=> ['user_syndicate:write']],
-            security: 'is_granted("ROLE_SYNDIC_CREATE")',
+            security: 'is_granted("ROLE_USER")',
             name: 'new_user_syndicate',
 
         ),
@@ -131,7 +131,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     #[Groups([
         'user_syndicate:write',
-        'user_owner:write',
         'user:read',
         'user:edit'
     ])]
@@ -196,7 +195,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true,)]
     #[Groups([
         'user:edit',
-        'user_owner:write',
         'apartment:read',
         'user_picture:read',
         'user_picture:write',

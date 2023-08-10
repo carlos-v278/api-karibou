@@ -53,9 +53,9 @@ class UserCreationMailer implements EventSubscriberInterface
             }
 
         }
-        if(strpos($uri, "/users/") &&  $method ==='PATCH' ){
+        if(strpos($uri, "/users/owner") &&  $method ==='POST' ){
             if($user instanceof  User){
-                $passwords= $this->userService->setPassword($user);
+                $passwords= $this->userService->getRandPassword($user);
                 $user->setPassword($passwords['hashedPassword']);
                 $email = (new Email())
                     ->from('karibou.website@outlook.fr')
@@ -64,6 +64,7 @@ class UserCreationMailer implements EventSubscriberInterface
                     ->html("hello world " . $passwords['password']);
                 $this->mailer->send($email);
             }
+
         }
         if(strpos($uri, "/users/tenant") &&  $method ==='POST' ){
             if($user instanceof  User){
@@ -77,6 +78,19 @@ class UserCreationMailer implements EventSubscriberInterface
                 $this->mailer->send($email);
             }
         }
+        if(strpos($uri, "/users/") &&  $method ==='PATCH' ){
+            if($user instanceof  User){
+                $passwords= $this->userService->setPassword($user);
+                $user->setPassword($passwords['hashedPassword']);
+                $email = (new Email())
+                    ->from('karibou.website@outlook.fr')
+                    ->to('carlosvieira278@gmail.com')
+                    ->subject('creation de compte')
+                    ->html("hello world " . $passwords['password']);
+                $this->mailer->send($email);
+            }
+        }
+
 
     }
 }
