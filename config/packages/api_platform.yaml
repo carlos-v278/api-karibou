@@ -1,4 +1,10 @@
 api_platform:
+  eager_loading:
+    enabled: true
+    fetch_partial: false
+    max_joins: 30
+    force_eager: false
+
   formats:
     jsonld: [ 'application/ld+json' ]
     json: [ 'application/json']

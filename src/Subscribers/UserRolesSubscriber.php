@@ -41,7 +41,6 @@ class UserRolesSubscriber implements EventSubscriberInterface
                 $user->setRoles([
                     "ROLE_SYNDIC_EDIT",
                     "ROLE_OWNER_CREATE",
-                    "ROLE_OWNER_EDIT",
                     "ROLE_USER",
                 ]);
 

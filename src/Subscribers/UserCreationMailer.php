@@ -18,7 +18,8 @@ use Symfony\Component\Mime\Address;
 
 class UserCreationMailer implements EventSubscriberInterface
 {
-
+    private const FROM_EMAIL = 'karibou.website@outlook.fr';
+    private const EMAIL_SUBJECT = 'creation de compte';
     public function __construct( private UserService $userService, private  MailerInterface $mailer)
     {
 
@@ -40,57 +41,38 @@ class UserCreationMailer implements EventSubscriberInterface
         $uri= $event->getRequest()->getUri();
         $method=$event->getRequest()->getMethod();
         $user = $event->getControllerResult();
-        if(strpos($uri, "/users/syndicate") &&  $method ==='POST' ){
+        if(
+            strpos($uri, "/users/owner") ||
+            strpos($uri, "/users/syndicate") ||
+            strpos($uri, "/users/tenant")
+            &&  $method ==='POST' ){
             if($user instanceof  User){
-                $passwords= $this->userService->getRandPassword($user);
+                $passwords = $this->userService->getRandPassword($user);
                 $user->setPassword($passwords['hashedPassword']);
-                $email = (new Email())
-                    ->from('karibou.website@outlook.fr')
-                    ->to('carlosvieira278@gmail.com')
-                    ->subject('creation de compte')
-                    ->html("hello world " . $passwords['password']);
-                $this->mailer->send($email);
+                $this->sendEmail($user,$passwords['password']);
             }
 
-        }
-        if(strpos($uri, "/users/owner") &&  $method ==='POST' ){
-            if($user instanceof  User){
-                $passwords= $this->userService->getRandPassword($user);
-                $user->setPassword($passwords['hashedPassword']);
-                $email = (new Email())
-                    ->from('karibou.website@outlook.fr')
-                    ->to('carlosvieira278@gmail.com')
-                    ->subject('creation de compte')
-                    ->html("hello world " . $passwords['password']);
-                $this->mailer->send($email);
-            }
-
-        }
-        if(strpos($uri, "/users/tenant") &&  $method ==='POST' ){
-            if($user instanceof  User){
-                $passwords= $this->userService->getRandPassword($user);
-                $user->setPassword($passwords['hashedPassword']);
-                $email = (new Email())
-                    ->from('karibou.website@outlook.fr')
-                    ->to('carlosvieira278@gmail.com')
-                    ->subject('creation de compte')
-                    ->html("hello world " . $passwords['password']);
-                $this->mailer->send($email);
-            }
         }
         if(strpos($uri, "/users/") &&  $method ==='PATCH' ){
             if($user instanceof  User){
                 $passwords= $this->userService->setPassword($user);
                 $user->setPassword($passwords['hashedPassword']);
-                $email = (new Email())
-                    ->from('karibou.website@outlook.fr')
-                    ->to('carlosvieira278@gmail.com')
-                    ->subject('creation de compte')
-                    ->html("hello world " . $passwords['password']);
-                $this->mailer->send($email);
+                $this->sendEmail($user,$passwords['password']);
             }
         }
 
 
+    }
+    private function sendEmail(User $user, $password): void
+    {
+        $emailContent = "hello world " . $password ;
+
+        $email = (new Email())
+            ->from(self::FROM_EMAIL)
+            ->to('carlosvieira278@gmail.com')
+            ->subject(self::EMAIL_SUBJECT)
+            ->html($emailContent);
+
+        $this->mailer->send($email);
     }
 }

@@ -34,9 +34,10 @@ class SecurityController extends AbstractController
         $em = $doctrine->getManager();
         if (!$user) {
             return $this->json([
-                'error' => 'Invalid login request: check that the Content-Type header is "application/json".',
+                'error' => 'Wrong user or password',
             ], 401);
         }
+
         //decode the password and check it's right
         $decoded = json_decode($request->getContent());
         $password = $decoded->password;

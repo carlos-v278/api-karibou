@@ -31,7 +31,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         new Post(
             uriTemplate: "users/syndicate",
             openapiContext: [
-                'summary'=>'Route qui permet de créer un utilisateur et un syndicat',
+                'summary'=>'Route qui permet de créer un user ratacher à un syndicat',
             ],
             normalizationContext: ['groups'=> ['user_syndicate:write' ]],
             denormalizationContext: ['groups'=> ['user_syndicate:write']],
@@ -80,19 +80,13 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             deserialize: false
         ),
         new GetCollection(
-            uriTemplate: "users/",
-            normalizationContext: ['groups'=> ['user:read']],
-            denormalizationContext: ['groups'=> ['user:read']],
-            security: 'is_granted("ROLE_TENANT_EDIT")',
-        ),
-        new GetCollection(
             uriTemplate: "me/",
             controller: MeController::class,
             paginationEnabled: false,
             normalizationContext: ['groups'=> ['user_me:read']],
             security: 'is_granted("ROLE_USER")',
         )
-    ]
+    ],normalizationContext: ['groups'=> ['user:read']],
 )]
 /* Supprimer  la get All users  car get par imeuble*/
 #[UniqueEntity(fields: ['email'],message: 'There is already an account with this email')]
@@ -102,10 +96,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['apartment:read',
+    #[Groups([
+        'get_building:read',
+        'apartment:read',
         'user_picture:read',
         'user_picture:write',
-        'user_me:read'
+        'user_me:read',
+        'get_apartment:read',
     ])]
     private ?int $id = null;
 
@@ -117,12 +114,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'user_owner:write',
         'user_tenant:write',
         'apartment:read',
-        'user_me:read'
+        'user_me:read',
+        'get_building:read',
+        'get_apartment:read',
     ])]
     private ?string $email = null;
 
     #[ORM\Column]
-    #[Groups(['user_me:read'])]
+    #[Groups([
+        'user_me:read',
+        'get_building:read'
+        ])]
     private array $roles = [];
 
     /**
@@ -144,7 +146,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'user:read',
         'user_tenant:write',
         'apartment:read',
-        'user_me:read'
+        'user_me:read',
+        'get_apartment:read',
     ])]
     private ?string $username = null;
 
@@ -163,7 +166,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'user:edit',
         'user_tenant:write',
         'apartment:read',
-        'user_me:read'
+        'user_me:read',
+        'get_building:read',
+        'get_apartment:read',
         ])]
     private ?string $firstname = null;
 
@@ -176,8 +181,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'user:edit',
         'user_tenant:write',
         'apartment:read',
-        'user_me:read'
+        'user_me:read',
+        'get_building:read',
+        'get_apartment:read',
     ])]
+    #[ApiProperty(readableLink: true, )]
     private ?string $lastname = null;
 
     #[ORM\ManyToMany(targetEntity: Syndicate::class, inversedBy: 'users',cascade: ['persist'])]
@@ -198,10 +206,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'apartment:read',
         'user_picture:read',
         'user_picture:write',
-        'user_me:read'
+        'user_me:read',
+        'get_building:read',
+        'get_apartment:read',
+
     ])]
     private ?string $picture = null;
 
+    #[Groups([
+        'user_tenant:write',
+    ])]
     #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'tenants')]
     private ?Apartment $location = null;
 
@@ -210,7 +224,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'user_owner:write',
         'user:read'
     ])]
-    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Apartment::class, cascade: ['persist'])]
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Apartment::class, cascade: ['persist'],fetch: "EAGER")]
     private Collection $properties;
 
     #[ORM\Column(nullable: false)]
@@ -218,6 +232,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updateAt;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Advertisement::class, orphanRemoval: true)]
+    private Collection $advertisements;
 
 
     public function __construct()
@@ -227,6 +244,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->apiTokens = new ArrayCollection();
         $this->syndicates = new ArrayCollection();
         $this->properties = new ArrayCollection();
+        $this->advertisements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -526,6 +544,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUpdateAt(\DateTimeImmutable $updateAt)
     {
         $this->updateAt = $updateAt;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Advertisement>
+     */
+    public function getAdvertisements(): Collection
+    {
+        return $this->advertisements;
+    }
+
+    public function addAdvertisement(Advertisement $advertisement): static
+    {
+        if (!$this->advertisements->contains($advertisement)) {
+            $this->advertisements->add($advertisement);
+            $advertisement->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdvertisement(Advertisement $advertisement): static
+    {
+        if ($this->advertisements->removeElement($advertisement)) {
+            // set the owning side to null (unless already changed)
+            if ($advertisement->getOwner() === $this) {
+                $advertisement->setOwner(null);
+            }
+        }
+
         return $this;
     }
 

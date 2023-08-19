@@ -3,58 +3,122 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use App\Controller\UsersBuilding;
 use App\Repository\BuildingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: BuildingRepository::class)]
+
 #[ApiResource(
     operations: [
         new GetCollection(
+            openapiContext: [
+                'summary'=>'Route qui permet récuperer le batiment relié du gestionaire du syndicat',
+            ],
             normalizationContext: ['groups'=> ['building:read']],
+            name: 'syndicate_building',
 
-        )
-    ]
+        ),
+        new Get(
+            uriTemplate: "buildings/{id}",
+            openapiContext: [
+                'summary'=>'Route qui permet récuperer les informations plus détaillé d\'un imeuble',
+            ],
+            normalizationContext: ['groups'=> ['get_building:read']],
+            security: 'is_granted("ROLE_USER")',
+            name: 'get_building',
+
+        ),
+
+    ],  normalizationContext: ['groups'=> ['get_building:read']],
+
 )]
 class Building
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['apartment:read','building:read'])]
+    #[Groups([
+        'apartment:read',
+        'building:read',
+        'get_building:read'
+    ])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write', 'building:read','apartment:read'])]
+    #[Groups([
+        'user_syndicate:read',
+        'user_syndicate:write',
+        'building:read',
+        'apartment:read',
+        'get_building:read'
+    ])]
     private ?string $city = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write','apartment:read','building:read'])]
+    #[Groups([
+        'user_syndicate:read',
+        'user_syndicate:write',
+        'apartment:read',
+        'building:read',
+        'get_building:read'
+    ])]
     private ?string $country = null;
 
     #[ORM\Column]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write','apartment:read','building:read'])]
+    #[Groups([
+        'user_syndicate:read',
+        'user_syndicate:write',
+        'apartment:read',
+        'building:read',
+        'get_building:read'
+    ])]
     private ?int $zipcode = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write','apartment:read','building:read'])]
+    #[Groups([
+        'user_syndicate:read',
+        'user_syndicate:write',
+        'apartment:read',
+        'building:read',
+        'get_building:read'
+    ])]
     private ?string $street = null;
 
     #[ORM\Column]
-    #[Groups(['user_syndicate:read', 'user_syndicate:write','apartment:read','building:read'])]
+    #[Groups([
+        'user_syndicate:read',
+        'user_syndicate:write',
+        'apartment:read',
+        'building:read',
+        'get_building:read'
+    ])]
     private ?int $number = null;
 
     #[ORM\ManyToOne(inversedBy: 'buildings')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups([
+        'get_building:read'
+    ])]
     private ?Syndicate $syndicate = null;
 
+    #[Groups([
+        'get_building:read'
+    ])]
     #[ORM\OneToMany(mappedBy: 'building', targetEntity: Advertisement::class, orphanRemoval: true)]
     private Collection $advertisements;
 
-    #[ORM\OneToMany(mappedBy: 'building', targetEntity: Apartment::class, orphanRemoval: true)]
+    #[MaxDepth(2)]
+    #[Groups([
+        'get_building:read'
+    ])]
+    #[ORM\OneToMany(mappedBy: 'building', targetEntity: Apartment::class, fetch: 'EAGER', orphanRemoval: true)]
     private Collection $apartments;
 
     public function __construct()
@@ -199,4 +263,29 @@ class Building
 
         return $this;
     }
+
+    /**
+     * Get an array of all users from all apartments related to this entity.
+     *
+     * @return User[]
+     */
+    #[Groups([
+        'get_building:read'
+    ])]
+    public function getAllMembers(): array
+    {
+        $allUsers = $this->syndicate->getUsers()->toArray();
+        foreach ($this->apartments as $apartment) {
+            if ($apartment->getOwner()) {
+                $allUsers[] = $apartment->getOwner();
+            }
+
+            $allUsers = array_merge($allUsers, $apartment->getTenants()->toArray());
+        }
+        return $allUsers;
+
+
+    }
+
+
 }

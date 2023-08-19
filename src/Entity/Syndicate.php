@@ -10,42 +10,69 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: SyndicateRepository::class)]
+#[ApiResource()]
 class Syndicate
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups([
+        'get_building:read'
+    ])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user_syndicate:write'])]
+    #[Groups([
+        'user_syndicate:write',
+        'get_building:read'
+    ])]
     private ?string $street = null;
 
     #[ORM\Column]
-    #[Groups(['user_syndicate:write'])]
+    #[Groups([
+        'user_syndicate:write',
+        'get_building:read'
+    ])]
     private ?int $street_number = 7;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups([ 'user_syndicate:write'])]
+    #[Groups([
+        'user_syndicate:write',
+        'get_building:read'
+    ])]
     private ?string $siret = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups([ 'user_syndicate:write'])]
+    #[Groups([
+        'user_syndicate:write',
+        'get_building:read'
+    ])]
     private ?string $siren = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups([ 'user_syndicate:write'])]
+    #[Groups([
+        'user_syndicate:write',
+        'get_building:read'
+    ])]
     private ?string $type = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user_syndicate:write'])]
+    #[Groups([
+        'user_syndicate:write',
+        'get_building:read'
+    ])]
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'syndicates')]
+    #[Groups([
+        'get_building:read'
+    ])]
     private Collection $users;
 
     #[ORM\OneToMany(mappedBy: 'syndicate', targetEntity: Building::class, cascade: ['persist'])]
-    #[Groups(['user_syndicate:write'])]
+    #[Groups([
+        'user_syndicate:write',
+    ])]
     private Collection $buildings;
 
     public function __construct()
