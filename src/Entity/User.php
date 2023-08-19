@@ -123,7 +123,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     #[Groups([
         'user_me:read',
-        'get_building:read'
+        'get_building:read',
+        'get_apartment:read'
         ])]
     private array $roles = [];
 
