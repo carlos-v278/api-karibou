@@ -5,11 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f9d610a4-def7-4b3b-bf16-0a8df32f50b0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Controller/GenerateRentReceiptController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Serializer/PdfNormalizer.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/pdf/rent_receipt_template.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/phpspec.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/phpspec.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/AdvertisementPictureController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/AdvertisementPictureController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/UserPictureController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserPictureController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/vich_uploader.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/vich_uploader.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20230811124637.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20230817125142.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20230817130514.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20230817142403.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/GenerateRentReceiptController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/GenerateRentReceiptController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/RentReceipt.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/RentReceipt.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,6 +164,12 @@
       <path value="$PROJECT_DIR$/vendor/symfony/monolog-bridge" />
       <path value="$PROJECT_DIR$/vendor/symfony/debug-bundle" />
       <path value="$PROJECT_DIR$/vendor/symfony/monolog-bundle" />
+      <path value="$PROJECT_DIR$/vendor/knplabs/knp-snappy-bundle" />
+      <path value="$PROJECT_DIR$/vendor/knplabs/knp-snappy" />
+      <path value="$PROJECT_DIR$/vendor/dompdf/dompdf" />
+      <path value="$PROJECT_DIR$/vendor/phenx/php-font-lib" />
+      <path value="$PROJECT_DIR$/vendor/phenx/php-svg-lib" />
+      <path value="$PROJECT_DIR$/vendor/sabberworm/php-css-parser" />
     </include_path>
   </component>
   <component name="ProjectId" id="2QplwqKf8w26dpnaLFpTB9pyumb" />
@@ -181,6 +199,7 @@
       <recent name="$PROJECT_DIR$/src/Controller" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/public" />
       <recent name="$PROJECT_DIR$/src" />
     </key>
   </component>
@@ -206,7 +225,7 @@
       <workItem from="1689066211738" duration="12350000" />
       <workItem from="1691587815738" duration="537000" />
       <workItem from="1691588459640" duration="897000" />
-      <workItem from="1691602572872" duration="65507000" />
+      <workItem from="1691602572872" duration="77200000" />
     </task>
     <servers />
   </component>

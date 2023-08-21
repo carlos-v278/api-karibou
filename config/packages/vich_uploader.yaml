@@ -14,3 +14,8 @@ vich_uploader:
             uri_prefix: /pictures/advertisements
             upload_destination: '%kernel.project_dir%/public/pictures/advertisements'
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+
+        pdf_rent_receipt:
+            uri_prefix: /pdf/receipt
+            upload_destination: '%kernel.project_dir%/public/pdf/receipt'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
