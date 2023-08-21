@@ -40,6 +40,7 @@ class UserCreationMailer implements EventSubscriberInterface
     {
         $uri= $event->getRequest()->getUri();
         $method=$event->getRequest()->getMethod();
+        $decoded = json_decode($event->getRequest()->getContent());
         $user = $event->getControllerResult();
         if(
             strpos($uri, "/users/owner") ||
@@ -53,7 +54,7 @@ class UserCreationMailer implements EventSubscriberInterface
             }
 
         }
-        if(strpos($uri, "/users/") &&  $method ==='PATCH' ){
+        if(strpos($uri, "/users/") &&  $method ==='PATCH' && isset($decoded->password)){
             if($user instanceof  User){
                 $passwords= $this->userService->setPassword($user);
                 $user->setPassword($passwords['hashedPassword']);
