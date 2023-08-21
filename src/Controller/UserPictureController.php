@@ -17,6 +17,7 @@ final class UserPictureController extends AbstractController
         if (!$user instanceof User) {
             throw new \RuntimeException('User entendu');
         }
+
         $user->setFile($request->files->get('file'));
         $user->setUpdateAt(new \DateTimeImmutable());
         return $user;

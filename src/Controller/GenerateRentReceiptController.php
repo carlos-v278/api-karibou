@@ -9,8 +9,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]
-final class AdvertisementPictureController extends AbstractController
+final class GenerateRentReceiptController extends AbstractController
 {
+    public function __construct(private EntityManagerInterface $entityManager, private PdfGenerator $pdfGenerator)
+    {
+
+    }
     public function __invoke(Advertisement $advertisement, Request $request): AdvertisementPicture
     {
         $advertisement = $request->attributes->get('data');
