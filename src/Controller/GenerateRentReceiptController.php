@@ -87,6 +87,7 @@ final class GenerateRentReceiptController extends AbstractController
         $rentReceipt->setFile($pdfFilename);  // Mettez le nom de fichier approprié ici
         $rentReceipt->setApartment($apartment);
         // EntityManager pour persister l'entité
+
         $em->persist($rentReceipt);
         $em->flush();
         return $rentReceipt;

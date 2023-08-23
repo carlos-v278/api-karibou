@@ -82,6 +82,7 @@ final class UserFactory extends ModelFactory
             'username' => self::faker()->randomElement(self::USERNAMES) . self::faker()->randomNumber(3),
             'firstname'=> self::faker()->randomElement(self::FIRSTNAMES),
             'lastname'=> self::faker()->randomElement(self::LASTNAMES),
+
         ];
     }
 

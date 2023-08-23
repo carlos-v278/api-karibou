@@ -5,23 +5,41 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f9d610a4-def7-4b3b-bf16-0a8df32f50b0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Serializer/PdfNormalizer.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/pdf/rent_receipt_template.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/phpspec.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/phpspec.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/vich_uploader.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/vich_uploader.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20230811124637.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20230817125142.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20230817130514.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20230817142403.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20230821221922.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20230821222058.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692656877.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692656974.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692657063.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692657147.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692657235.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692657249.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692657261.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692657299.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692657328.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692657558.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692657564.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692657679.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692658925.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692659001.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692659160.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692659937.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692660183.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692660283.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692660329.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692660376.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692660427.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692660455.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692660515.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692660793.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692660870.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692660905.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/pdf/receipt/rent_receipt_1692661010.pdf" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/GenerateRentReceiptController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/GenerateRentReceiptController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/AppFixtures.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/RentReceipt.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/RentReceipt.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Syndicate.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Syndicate.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Factory/UserFactory.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Factory/UserFactory.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -170,6 +188,7 @@
       <path value="$PROJECT_DIR$/vendor/phenx/php-font-lib" />
       <path value="$PROJECT_DIR$/vendor/phenx/php-svg-lib" />
       <path value="$PROJECT_DIR$/vendor/sabberworm/php-css-parser" />
+      <path value="$PROJECT_DIR$/vendor/profburial/wkhtmltopdf-binaries-osx" />
     </include_path>
   </component>
   <component name="ProjectId" id="2QplwqKf8w26dpnaLFpTB9pyumb" />
@@ -226,11 +245,23 @@
       <workItem from="1691587815738" duration="537000" />
       <workItem from="1691588459640" duration="897000" />
       <workItem from="1691602572872" duration="77200000" />
+      <workItem from="1692663964332" duration="3534000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Entity/Advertisement.php</url>
+          <line>60</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

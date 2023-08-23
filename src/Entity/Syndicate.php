@@ -28,12 +28,12 @@ class Syndicate
     ])]
     private ?string $street = null;
 
-    #[ORM\Column]
     #[Groups([
         'user_syndicate:write',
         'get_building:read'
     ])]
-    private ?int $street_number = 7;
+    #[ORM\Column]
+    private ?int $streetNumber = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups([
@@ -100,12 +100,12 @@ class Syndicate
 
     public function getStreetNumber(): ?int
     {
-        return $this->street_number;
+        return $this->streetNumber;
     }
 
-    public function setStreetNumber(int $street_number): self
+    public function setStreetNumber(int $streetNumber): self
     {
-        $this->street_number = $street_number;
+        $this->streetNumber = $streetNumber;
 
         return $this;
     }

@@ -66,7 +66,6 @@ class RentReceipt
 
     #[Groups([
         'rent_receipt:read',
-        'rent_receipt:write'
     ])]
     #[ORM\Column(length: 255)]
     private ?string $file = null;

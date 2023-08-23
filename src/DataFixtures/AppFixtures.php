@@ -15,7 +15,7 @@ class AppFixtures extends Fixture
     {
         // $product = new Product();
         // $manager->persist($product);
-        UserFactory::createMany(10);
+        UserFactory::createMany(2);
     /*    BookFactory::createMany(40,function(){
             return [
                 'user' => UserFactory::random()
