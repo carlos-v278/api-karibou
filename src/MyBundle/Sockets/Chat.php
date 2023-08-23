@@ -7,35 +7,40 @@ use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 
 class Chat implements MessageComponentInterface {
-    protected $clients;
+    protected $rooms;
 
     public function __construct() {
-        $this->clients = new \SplObjectStorage;
+        $this->rooms = [];
     }
 
     public function onOpen(ConnectionInterface $conn) {
-        // Store the new connection to send messages to later
-        $this->clients->attach($conn);
+        // Initialize the user's room here, for example, based on URL parameters
+        $query = $conn->httpRequest->getUri()->getQuery();
+        parse_str($query, $params);
+        $room = isset($params['room']) ? $params['room'] : 'default';
+
+        if (!isset($this->rooms[$room])) {
+            $this->rooms[$room] = new \SplObjectStorage;
+        }
+
+        $this->rooms[$room]->attach($conn);
 
         echo "New connection! ({$conn->resourceId})\n";
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
-        $numRecv = count($this->clients) - 1;
-        echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
-            , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
+        $room = $this->getUserRoom($from);
 
-        foreach ($this->clients as $client) {
+        foreach ($this->rooms[$room] as $client) {
             if ($from !== $client) {
-                // The sender is not the receiver, send to each client connected
                 $client->send($msg);
             }
         }
     }
 
     public function onClose(ConnectionInterface $conn) {
-        // The connection is closed, remove it, as we can no longer send it messages
-        $this->clients->detach($conn);
+        $room = $this->getUserRoom($conn);
+        $this->rooms[$room]->detach($conn);
 
         echo "Connection {$conn->resourceId} has disconnected\n";
     }
@@ -44,5 +49,11 @@ class Chat implements MessageComponentInterface {
         echo "An error has occurred: {$e->getMessage()}\n";
 
         $conn->close();
+    }
+
+    protected function getUserRoom(ConnectionInterface $conn) {
+        $query = $conn->httpRequest->getUri()->getQuery();
+        parse_str($query, $params);
+        return isset($params['room']) ? $params['room'] : 'default';
     }
 }

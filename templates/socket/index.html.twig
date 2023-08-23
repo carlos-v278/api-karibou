@@ -21,24 +21,21 @@
     <ul id="chat-list"></ul>
     <hr>
     <textarea id="form-message" placeholder="Your public message here"></textarea>
+    <input type="text" id="form-room" placeholder="Enter room name"/>
     <input type="button" id="form-submit" value="Send message"/>
     <script>
-        // This object will be sent everytime you submit a message in the sendMessage function.
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const room = urlParams.get('room')
+        console.log(room)
         var clientInformation = {
             username: new Date().getTime().toString()
-            // You can add more information in a static object
         };
 
-        // START SOCKET CONFIG
-        /**
-         * Note that you need to change the "sandbox" for the URL of your project.
-         * According to the configuration in Sockets/Chat.php , change the port if you need to.
-         * @type WebSocket
-         */
-        var conn = new WebSocket('ws://sandbox:8080/chat');
+        var conn = new WebSocket(`ws://127.0.0.1:8081?room=${room}`); // Default room
 
         conn.onopen = function(e) {
-            console.info("Connection established succesfully");
+            console.info("Connection established successfully");
         };
 
         conn.onmessage = function(e) {
@@ -48,50 +45,46 @@
             console.log(data);
         };
 
-        conn.onerror = function(e){
+        conn.onerror = function(e) {
             alert("Error: something went wrong with the socket.");
             console.error(e);
         };
-        // END SOCKET CONFIG
 
-
-        /// Some code to add the messages to the list element and the message submit.
-        document.getElementById("form-submit").addEventListener("click",function(){
+        document.getElementById("form-submit").addEventListener("click", function() {
             var msg = document.getElementById("form-message").value;
+            var room = document.getElementById("form-room").value; // Get room name from input
 
-            if(!msg){
+            if (!msg) {
                 alert("Please send something on the chat");
+                return;
             }
 
-            Chat.sendMessage(msg);
-            // Empty text area
+            if (!room) {
+                alert("Please enter a room name");
+                return;
+            }
+
+            // Send message with room information
+            Chat.sendMessage(msg, room);
             document.getElementById("form-message").value = "";
         }, false);
 
-        // Mini API to send a message with the socket and append a message in a UL element.
         var Chat = {
-            appendMessage: function(username,message){
-                var from;
+            appendMessage: function(username, message) {
+                var from = username === clientInformation.username ? "me" : username;
 
-                if(username == clientInformation.username){
-                    from = "me";
-                }else{
-                    from = clientInformation.username;
-                }
-
-                // Append List Item
                 var ul = document.getElementById("chat-list");
                 var li = document.createElement("li");
-                li.appendChild(document.createTextNode(from + " : "+ message));
+                li.appendChild(document.createTextNode(from + " : " + message));
                 ul.appendChild(li);
             },
-            sendMessage: function(text){
+            sendMessage: function(text, room) {
                 clientInformation.message = text;
-                // Send info as JSON
+                clientInformation.room = room; // Include room information
                 conn.send(JSON.stringify(clientInformation));
-                // Add my own message to the list
                 this.appendMessage(clientInformation.username, clientInformation.message);
             }
         };
     </script>
+
 {% endblock %}

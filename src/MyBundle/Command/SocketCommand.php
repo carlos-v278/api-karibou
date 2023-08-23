@@ -13,6 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
+
 class SocketCommand extends Command
 {
     protected function configure()
@@ -33,23 +34,15 @@ class SocketCommand extends Command
             'Starting chat, open your browser.',// Empty line
         ]);
 
-        // The domain of your app as first parameter
+        $server = IoServer::factory(
+            new HttpServer(
+                new WsServer(
+                    new Chat()
+                )
+            ),
+            8001
+        );
 
-        // Note : if you got problems during the initialization, add as third parameter '0.0.0.0'
-        // to prevent any error related to localhost :
-        // $app = new \Ratchet\App('sandbox', 8080,'0.0.0.0');
-        // Domain as first parameter
-        $app = new App('sandbox', 8080);
-        // Add route to chat with the handler as second parameter
-        $app->route('/chat', new Chat);
-
-        // To add another routes, then you can use :
-        //$app->route('/america-chat', new AmericaChat);
-        //$app->route('/europe-chat', new EuropeChat);
-        //$app->route('/africa-chat', new AfricaChat);
-        //$app->route('/asian-chat', new AsianChat);
-
-        // Run !
-        $app->run();
+        $server->run();
     }
 }

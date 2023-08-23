@@ -23,6 +23,7 @@ services:
     container_name: app_container
     ports:
       - 8080:8000
+      - 8081:8001
     networks:
       - local_environment_web
     depends_on:

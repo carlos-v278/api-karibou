@@ -5,14 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f9d610a4-def7-4b3b-bf16-0a8df32f50b0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/MyBundle/Command/SocketCommand.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/MyBundle/Sockets/Chat.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/phpspec.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/phpspec.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/pdf_render/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/pdf_render/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/routes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/routes.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/services.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/services.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MyBundle/Command/SocketCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/MyBundle/Command/SocketCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MyBundle/Sockets/Chat.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/MyBundle/Sockets/Chat.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/socket/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/socket/index.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -232,7 +231,7 @@
       <workItem from="1691587815738" duration="537000" />
       <workItem from="1691588459640" duration="897000" />
       <workItem from="1691602572872" duration="77200000" />
-      <workItem from="1692663964332" duration="12493000" />
+      <workItem from="1692663964332" duration="17129000" />
     </task>
     <servers />
   </component>

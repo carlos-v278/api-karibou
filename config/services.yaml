@@ -27,3 +27,7 @@ services:
         tags:
             - { name: api_platform.doctrine.orm.query_extension.collection }
             - { name: api_platform.doctrine.orm.query_extension.item }
+        
+    YourBundle\Sockets\Chat:
+        tags:
+            - { name: monolog.logger, channel: websocket }
