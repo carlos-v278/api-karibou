@@ -103,6 +103,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'user_picture:write',
         'user_me:read',
         'get_apartment:read',
+        'all_conversation:read'
     ])]
     private ?int $id = null;
 
@@ -117,6 +118,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'user_me:read',
         'get_building:read',
         'get_apartment:read',
+        'all_conversation:read'
     ])]
     private ?string $email = null;
 
@@ -124,7 +126,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups([
         'user_me:read',
         'get_building:read',
-        'get_apartment:read'
+        'get_apartment:read',
+        'all_conversation:read'
         ])]
     private array $roles = [];
 
@@ -149,6 +152,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'apartment:read',
         'user_me:read',
         'get_apartment:read',
+        'all_conversation:read'
     ])]
     private ?string $username = null;
 
@@ -170,6 +174,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'user_me:read',
         'get_building:read',
         'get_apartment:read',
+        'all_conversation:read'
         ])]
     private ?string $firstname = null;
 
@@ -185,6 +190,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'user_me:read',
         'get_building:read',
         'get_apartment:read',
+        'all_conversation:read'
     ])]
     #[ApiProperty(readableLink: true, )]
     private ?string $lastname = null;
@@ -210,6 +216,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         'user_me:read',
         'get_building:read',
         'get_apartment:read',
+        'all_conversation:read'
 
     ])]
     private ?string $picture = null;
@@ -237,6 +244,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Advertisement::class, orphanRemoval: true)]
     private Collection $advertisements;
 
+    #[ORM\ManyToMany(targetEntity: Conversation::class, mappedBy: 'participants')]
+    private Collection $conversations;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Message::class)]
+    private Collection $messages;
+
 
     public function __construct()
     {
@@ -246,6 +259,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->syndicates = new ArrayCollection();
         $this->properties = new ArrayCollection();
         $this->advertisements = new ArrayCollection();
+        $this->conversations = new ArrayCollection();
+        $this->messages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -572,6 +587,63 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($advertisement->getOwner() === $this) {
                 $advertisement->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Conversation>
+     */
+    public function getConversations(): Collection
+    {
+        return $this->conversations;
+    }
+
+    public function addConversation(Conversation $conversation): static
+    {
+        if (!$this->conversations->contains($conversation)) {
+            $this->conversations->add($conversation);
+            $conversation->addParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConversation(Conversation $conversation): static
+    {
+        if ($this->conversations->removeElement($conversation)) {
+            $conversation->removeParticipant($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Message $message): static
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages->add($message);
+            $message->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Message $message): static
+    {
+        if ($this->messages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getOwner() === $this) {
+                $message->setOwner(null);
             }
         }
 

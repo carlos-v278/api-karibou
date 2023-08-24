@@ -27,9 +27,10 @@
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const room = urlParams.get('room')
-        console.log(room)
+        const name = urlParams.get('name')
+        console.log(name)
         var clientInformation = {
-            username: new Date().getTime().toString()
+            username: name
         };
 
         var conn = new WebSocket(`ws://127.0.0.1:8081?room=${room}`); // Default room

@@ -7,6 +7,7 @@ use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
 use App\Entity\Apartment;
 use App\Entity\Building;
+use App\Entity\Conversation;
 use Doctrine\ORM\QueryBuilder;
 use App\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -42,6 +43,17 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
             ->join("s.users", "u")
 
                 ->andWhere("u.id = :user");
+            $queryBuilder->setParameter("user", $user);
+        }
+        if(
+            ($resourceClass === Conversation::class )
+            && !$this->authorizationChecker->isGranted('ROLE_ADMIN')
+            && $user instanceof User
+            && $this->currentRoute === 'get_all_conversation'
+        ){
+            $rootAlias = $queryBuilder->getRootAliases()[0];
+            $queryBuilder->join("$rootAlias.participants", "p")
+                ->andWhere("p.id = :user");
             $queryBuilder->setParameter("user", $user);
         }
         if(
